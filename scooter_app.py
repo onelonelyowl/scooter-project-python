@@ -40,8 +40,11 @@ class ScooterApp():
         self.registered_users.append(User(username, password, age))
     
     def login_user(self, username, password):
+        if type(username) is not str or type(password) is not str:
+            raise TypeError("Either your username or password is not a string")
+        if len(username) < 3 or len(password) < 3:
+            raise AttributeError("Length of username/password is too short")
         user = [user for user in self.registered_users if user.username == username]
-        print(user)
         if user[0].password == password:
             try:
                 user[0].login(password)
@@ -49,10 +52,13 @@ class ScooterApp():
                 print("login failed on the user.login() function somewhere")
 
     def logout_user(self, username):
+        if type(username) is not str and len(username) < 3:
+            raise ValueError("username is either not a string or too short")
         foundUser = [user for user in self.registered_users if user.username == username]
         if foundUser.loggedIn == False:
             raise ValueError("user is already logged out")
-        else: foundUser.logout
+        else: 
+            foundUser.logout()
    
     def create_scooter(self, station):
         if station not in ScooterApp.stations.keys():
@@ -73,6 +79,8 @@ class ScooterApp():
         #maybe check if serial exists at station already, not sure if necessary
         
     def rent_scooter(self, scooter_serial, username):
+        if type(scooter_serial) is not int or type(username) is not str:
+            raise TypeError("either scooter_serial or username type is incorrect") 
         foundUser = self.get_user(username)
         if not isinstance(foundUser, User): # this correctly finds user
             raise LookupError("Couldn't find the passed user in the registered users")
